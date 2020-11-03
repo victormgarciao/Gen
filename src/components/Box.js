@@ -1,12 +1,12 @@
 import React from "react";
 import { observer } from "mobx-react";
-import BoxDraggable from "./BoxDraggable";
+import BoxDraggableContainer from "../containers/BoxDraggable.container";
 
 function Box(props) {
   return (
-    <BoxDraggable {...props}>
+    <BoxDraggableContainer {...props}>
       <div>Box</div>
-    </BoxDraggable>
+    </BoxDraggableContainer>
   );
 }
 

@@ -1,30 +1,100 @@
-import { types } from "mobx-state-tree";
+import { destroy, onPatch, types } from "mobx-state-tree";
 import uuid from "uuid/v4";
-import BoxModel from "./models/Box";
+import BoxModel from "./models/Box.model";
 import getRandomColor from "../utils/getRandomColor";
+import { values } from "mobx";
+import { UndoManager } from "mst-middlewares";
+
+function createBox() {
+    return BoxModel.create({
+        id: uuid(),
+        color: getRandomColor(),
+        left: 0,
+        top: 0
+    });
+};
 
 const MainStore = types
-  .model("MainStore", {
-    boxes: types.array(BoxModel)
+    .model("MainStore", {
+        boxes: types.array(BoxModel),
+        history: types.optional(UndoManager, {}),
+    })
+    .actions(self => {
+        setUndoManager(self);
+
+        return {
+            addBoxToStore() {
+                self.boxes.push(createBox());
+            },
+
+            removeSelectedBoxes() {
+                self.boxes
+                    .filter((box) => box.selected)
+                    .map((box) => destroy(box));
+            },
+
+            removeAllBoxes() {
+                self.boxes.clear();
+            },
+
+            setColorToSelectedBoxes(event) {
+                const newColor = event.target.value;
+                self.boxes
+                    .filter((box) => box.selected)
+                    .map((box) => box.color = newColor);
+            },
+
+            setPositionToBox(boxToChange, coordinate) {
+                self.boxes.find((box) => box.id === boxToChange.id).left = coordinate.X;
+                self.boxes.find((box) => box.id === boxToChange.id).top = coordinate.Y;
+            },
+
+            init() {
+                const boxesFromStorage = JSON.parse(localStorage.getItem('boxes'));
+                if (boxesFromStorage) {
+                    self.boxes = boxesFromStorage;
+                }
+            },
+
+            undo() { undoManager.canUndo && undoManager.undo() },
+            redo() { undoManager.canRedo && undoManager.redo() },
+        };
+    })
+    .views(self => {
+        return {
+            getSelectedBoxes() {
+                return self.boxes.filter((box) => box.selected);
+            },
+
+            getSelectedBoxesCount() {
+                const selectedBoxes = self.getSelectedBoxes();
+                const isNotEmpty = selectedBoxes.length;
+                return isNotEmpty ? `Boxes selected: ${selectedBoxes.length}` : 'No boxes selected';
+            },
+
+            getBoxById(idToFind) {
+                return self.boxes.find((box) => box.id === idToFind);
+            },
+
+            canUndo() { return undoManager.canUndo },
+            canRedo() { return undoManager.canRedo },
+        };
   })
-  .actions(self => {
-    return {
-      addBox(box) {
-        self.boxes.push(box);
-      }
-    };
-  })
-  .views(self => ({}));
+;
+
+export let undoManager = {}
+export const setUndoManager = (targetStore) => {
+    undoManager = targetStore.history
+};
 
 const store = MainStore.create();
+store.init();
 
-const box1 = BoxModel.create({
-  id: uuid(),
-  color: getRandomColor(),
-  left: 0,
-  top: 0
+onPatch(store, patch => {
+    console.log(patch);
+
+    // console.log('UNDOOOOOOOO', undoManager.canUndo);
+    localStorage.setItem('boxes', JSON.stringify(values(store.boxes)));
 });
-
-store.addBox(box1);
 
 export default store;
