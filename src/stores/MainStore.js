@@ -28,8 +28,7 @@ const MainStore = types
             },
 
             removeSelectedBoxes() {
-                self.boxes
-                    .filter((box) => box.selected)
+                self.getSelectedBoxes()
                     .map((box) => destroy(box));
             },
 
@@ -39,21 +38,19 @@ const MainStore = types
 
             setColorToSelectedBoxes(event) {
                 const newColor = event.target.value;
-                self.boxes
-                    .filter((box) => box.selected)
+                self.getSelectedBoxes()
                     .map((box) => box.color = newColor);
             },
 
             setPositionToBox(boxToChange, coordinate) {
-                self.boxes.find((box) => box.id === boxToChange.id).left = coordinate.X;
-                self.boxes.find((box) => box.id === boxToChange.id).top = coordinate.Y;
+                const boxFound = self.getBoxById(boxToChange.id);
+                boxFound.left = coordinate.X;
+                boxFound.top = coordinate.Y;
             },
 
             init() {
                 const boxesFromStorage = JSON.parse(localStorage.getItem('boxes'));
-                if (boxesFromStorage) {
-                    self.boxes = boxesFromStorage;
-                }
+                if (boxesFromStorage) { self.boxes = boxesFromStorage; }
             },
 
             undo() { undoManager.canUndo && undoManager.undo() },
@@ -91,9 +88,7 @@ const store = MainStore.create();
 store.init();
 
 onPatch(store, patch => {
-    console.log(patch);
-
-    // console.log('UNDOOOOOOOO', undoManager.canUndo);
+    // console.log(patch);
     localStorage.setItem('boxes', JSON.stringify(values(store.boxes)));
 });
 
