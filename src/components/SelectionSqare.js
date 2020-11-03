@@ -14,6 +14,7 @@ function SelectionSquare(props) {
             style={{
                 border: "1px dashed black",
                 position: "absolute",
+                zIndex: 9999,
                 width,
                 height,
                 left,

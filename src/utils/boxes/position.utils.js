@@ -64,15 +64,15 @@ function setNewPositionToBoxes(boxes){
     };
 };
 
-export function handleBoxBeforeDrag() {
-    function updateAxisOfAllBoxes() {
-        const allBoxes = getAllBoxElementsList();
-        allBoxes.map((boxElement) => {
-            const box = store.getBoxById(boxElement.id);
-            return updatePositionAttributes(boxElement)({ X: box.left, Y: box.top })
-        });
-    }
+function updateAxisOfAllBoxes() {
+    const allBoxes = getAllBoxElementsList();
+    allBoxes.map((boxElement) => {
+        const box = store.getBoxById(boxElement.id);
+        return updatePositionAttributes(boxElement)({ X: box.left, Y: box.top })
+    });
+}
 
+export function handleBoxBeforeDrag() {
     updateAxisOfAllBoxes();
 }
 
@@ -98,4 +98,5 @@ export function handleBoxPropsAfterDrag (event) {
     } else {
         setNewPositionToBoxes([target])(event);
     }
+    updateAxisOfAllBoxes();
 };

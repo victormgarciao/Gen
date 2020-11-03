@@ -15,17 +15,14 @@ class BoxDraggableContainer extends Component {
     }
 
     handleToggle() {
-        console.log(this.hasBeenMoved);
         if (!this.hasBeenMoved) {
             this.props.toggle();
         }
         this.hasBeenMoved = false;
-        console.log(this.hasBeenMoved);
     }
 
     handleDrag() {
         this.hasBeenMoved = true;
-        console.log('drag', this.hasBeenMoved)
         handleBoxBeforeDrag()
     }
 

@@ -1,25 +1,45 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { observer } from "mobx-react";
+import CloseDeleteButton from "./BoxDeleteButton";
 
 function BoxDraggable(props) {
+    const {
+        box: { remove },
+        children,
+        color,
+        handleToggle,
+        height,
+        id,
+        left,
+        reference,
+        selected,
+        top,
+        width,
+    } = props;
+
     return (
-        <div
-            id={props.id}
-            className={`box ${props.selected ? 'selected' : ''}`}
-            style={{
-                backgroundColor: props.color,
-                width: props.selected ? props.width - 12 : props.width,
-                height: props.selected ? props.height - 12 : props.height,
-                margin: props.selected ? 5 : 0,
-                border: props.selected ? '2px solid black' : 'none',
-                transform: `translate(${props.left}px, ${props.top}px)`,
-                userSelect: 'none'
-            }}
-            onClick={(props.handleToggle)}
-            ref={props.reference}
-        >
-            {props.children}
-        </div>
+        <Fragment>
+            <div
+                id={id}
+                className={`box ${selected ? 'selected' : ''}`}
+                style={{
+                    backgroundColor: color,
+                    width: selected ? width - 12 : width,
+                    height: selected ? height - 12 : height,
+                    margin: selected ? 5 : 0,
+                    border: selected ? '2px solid black' : 'none',
+                    transform: `translate(${left}px, ${top}px)`,
+                    userSelect: 'none'
+                }}
+                onClick={(handleToggle)}
+                ref={reference}
+            >
+                { selected && (
+                    <CloseDeleteButton action={remove} />
+                )}
+                {children}
+            </div>
+        </Fragment>
     );
 }
 

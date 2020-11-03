@@ -17,8 +17,9 @@ const BoxModel = types
         self.selected = !self.selected;
       },
 
-      remove() {
-        getParent(self, 1).removeItem(self);
+      remove(event) {
+        event.stopPropagation();
+        getParent(self, 2).removeBox(self);
       }
     }
   });

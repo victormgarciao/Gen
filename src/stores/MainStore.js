@@ -27,6 +27,10 @@ const MainStore = types
                 self.boxes.push(createBox());
             },
 
+            removeBox(box) {
+                destroy(box);
+            },
+
             removeSelectedBoxes() {
                 self.getSelectedBoxes()
                     .map((box) => destroy(box));
@@ -36,10 +40,9 @@ const MainStore = types
                 self.boxes.clear();
             },
 
-            setColorToSelectedBoxes(event) {
-                const newColor = event.target.value;
+            setColorToSelectedBoxes(color) {
                 self.getSelectedBoxes()
-                    .map((box) => box.color = newColor);
+                    .map((box) => box.color = color);
             },
 
             setPositionToBox(boxToChange, coordinate) {
@@ -63,7 +66,7 @@ const MainStore = types
                 return self.boxes.filter((box) => box.selected);
             },
 
-            getSelectedBoxesCount() {
+            getSelectedBoxesLabel() {
                 const selectedBoxes = self.getSelectedBoxes();
                 const isNotEmpty = selectedBoxes.length;
                 return isNotEmpty ? `Boxes selected: ${selectedBoxes.length}` : 'No boxes selected';
