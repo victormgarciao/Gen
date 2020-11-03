@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Canvas from "../components/Canvas";
+import { isObject2InsideObject1 } from "../utils/selection/selection.utils";
 
 class CanvasContainer extends Component {
     constructor(props) {
@@ -22,19 +23,21 @@ class CanvasContainer extends Component {
             selectionTop: 0,
         }
 
-        this.mouseDown = this.mouseDown.bind(this);
-        this.mouseMove = this.mouseMove.bind(this);
-        this.mouseUp = this.mouseUp.bind(this);
+        this.handleMouseDown = this.handleMouseDown.bind(this);
+        this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.handleMouseUp = this.handleMouseUp.bind(this);
         this.setMousePosition = this.setMousePosition.bind(this);
-        this.isInBounds = this.isInBounds.bind(this);
+        this.resetSelection = this.resetSelection.bind(this);
     }
 
-    mouseDown(event) {
-        this.setState({ canvas: document.getElementById('canvas')});
-        if (event.target.id === "canvas") {
-            this.setState({ isSelectionOn: true });
 
+    handleMouseDown(event) {
+        this.setState({ canvas: document.getElementById('canvas')});
+        const isThisTargetCanvas = event.target.id === "canvas";
+
+        if (isThisTargetCanvas) {
             this.setState({
+                isSelectionOn: true,
                 mouse: {
                     x: event.pageX,
                     y: event.pageY,
@@ -47,7 +50,8 @@ class CanvasContainer extends Component {
         }
     }
 
-    mouseMove(event) {
+
+    handleMouseMove(event) {
         if (this.state.isSelectionOn) {
             this.setMousePosition(event);
             this.setState({
@@ -59,76 +63,55 @@ class CanvasContainer extends Component {
         }
     }
 
-    mouseUp() {
+
+    handleMouseUp() {
         const selectionSquare = this.state.canvas.querySelector(".selection");
-        const boxes = [...this.state.canvas.querySelectorAll(".box")];
+        const allBoxesElements = [...this.state.canvas.querySelectorAll(".box")];
+        const isInsideSelection = isObject2InsideObject1(selectionSquare);
+        const store = this.store;
 
-        if (selectionSquare) {
-            const inBounds = [];
-
-            for (const boxElement of boxes) {
-                const box = this.store.getBoxById(boxElement.id);
-                if (this.isInBounds(selectionSquare, boxElement)) {
-                    box.toggle()
-                }
-            }
-
-            if (inBounds.length) {
-                for (const boxElement of inBounds) {
-                    const box = this.store.getBoxById(boxElement.id);
-                    box.toggle();
-                }
+        function handleSelection() {
+            for (const boxElement of allBoxesElements) {
+                const box = store.getBoxById(boxElement.id);
+                if (isInsideSelection(boxElement)) { box.toggle(); }
             }
         }
 
-        this.setState({ isSelectionOn: false });
-        this.setState({ mouse: { x: 0, y: 0, startX: 0, startY: 0 }});
+        if (selectionSquare) { handleSelection(); }
+        this.resetSelection();
     }
+    
+
+    resetSelection() {
+        this.setState({
+            isSelectionOn: false,
+            mouse: { x: 0, y: 0, startX: 0, startY: 0 },
+        });
+    }
+
 
     setMousePosition(event) {
         const currentEvent = event || window.event;
 
-            if (currentEvent.pageX) {
-                this.setState({
-                    mouse: {
-                        x: currentEvent.pageX + window.pageXOffset,
-                        y: currentEvent.pageY + window.pageYOffset,
-                        startX: this.state.mouse.startX,
-                        startY: this.state.mouse.startY,
-                    }
-                });
-            } else if (currentEvent.clientX) {
-                this.setState({
-                    mouse: {
-                        x: currentEvent.clientX + document.body.scrollLeft,
-                        y: currentEvent.clientY + document.body.scrollTop,
-                        startX: this.state.mouse.startX,
-                        startY: this.state.mouse.startY,
-                    }
-                });
+        this.setState({
+            mouse: {
+                x: currentEvent.pageX + window.pageXOffset,
+                y: currentEvent.pageY + window.pageYOffset,
+                startX: this.state.mouse.startX,
+                startY: this.state.mouse.startY,
             }
+        });
     }
     
-    isInBounds(obj1, obj2) {
-            const a = obj1.getBoundingClientRect();
-            const b = obj2.getBoundingClientRect();
-        
-            return (
-                a.x < b.x + b.width &&
-                a.x + a.width > b.x &&
-                a.y < b.y + b.height &&
-                a.y + a.height > b.y
-            );
-    }
 
     render() {
         return (
             <Canvas 
                 store={this.store}
                 isSelectionOn={this.state.isSelectionOn}
-                mouseUp={this.mouseUp}
-                mouseDown={this.mouseDown}
-                mouseMove={this.mouseMove}
+                handleMouseUp={this.handleMouseUp}
+                handleMouseDown={this.handleMouseDown}
+                handleMouseMove={this.handleMouseMove}
                 selectionWidth={this.state.selectionWidth}
                 selectionHeight={this.state.selectionHeight}
                 selectionLeft={this.state.selectionLeft}

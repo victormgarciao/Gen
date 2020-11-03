@@ -9,9 +9,9 @@ function Canvas(props) {
     const {
         store,
         isSelectionOn,
-        mouseUp,
-        mouseDown,
-        mouseMove,
+        handleMouseUp,
+        handleMouseDown,
+        handleMouseMove,
         selectionWidth,
         selectionHeight,
         selectionLeft,
@@ -19,7 +19,13 @@ function Canvas(props) {
     } = props;
 
     return (
-        <div className="canva" id="canvas" onMouseUp={mouseUp} onMouseDown={mouseDown} onMouseMove={mouseMove}>
+        <div
+            className="canva"
+            id="canvas"
+            onMouseUp={handleMouseUp}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+        >
             { isSelectionOn && (
                 <SelectionSquare
                     width={selectionWidth}

@@ -69,7 +69,7 @@ export function handleBoxBeforeDrag() {
         const allBoxes = getAllBoxElementsList();
         allBoxes.map((boxElement) => {
             const box = store.getBoxById(boxElement.id);
-            updatePositionAttributes(boxElement)({ X: box.left, Y: box.top })
+            return updatePositionAttributes(boxElement)({ X: box.left, Y: box.top })
         });
     }
 
