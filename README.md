@@ -1,3 +1,23 @@
+# Victor Edition
+
+- You can add boxes with the button "Add Box" with a random color
+- You can delete all boxes with button "Remove All Boxes"
+- You can delete only selected boxes with button "Remove Selected Boxes"
+- You can select one box by clicking on it
+- You can select several boxes keeping pressed the mouse on the white area
+- Each selected box will be highlighted and it will have a "x" button on the corner"
+- You can delete that box with that "x" button"
+
+- You can drag and move boxes
+- If you move one selected box, you will move all selected boxes as well"
+- If you move one non selected box, you only move that one"
+- You can change the color of the selected boxes by clicking on the color selector
+- It keeps the state in the localStorage
+- And also, if you make a mistake, you can undo or redo your actions with buttons "undo" and "redo".
+
+## I think everything is covered, including extras :D
+
+
 Welcome to this code test! :)
 
 The main objective of this technical excercise is for you to get a good grasp of what kind of problems we encounter on Genially. We wouldn't want you to find some nasty surprises if you decide to join us.
