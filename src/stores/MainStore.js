@@ -40,9 +40,10 @@ const MainStore = types
                 self.boxes.clear();
             },
 
-            setColorToSelectedBoxes(color) {
+            setColorToSelectedBoxes(event) {
+                const newColor = event.target.value;
                 self.getSelectedBoxes()
-                    .map((box) => box.color = color);
+                    .map((box) => box.color = newColor);
             },
 
             setPositionToBox(boxToChange, coordinate) {
