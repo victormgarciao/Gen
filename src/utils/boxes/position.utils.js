@@ -1,26 +1,28 @@
 import store from "../../stores/MainStore";
-import { getSelectedBoxElements, getAllBoxElementsList } from "../dom/dom.utils";
+import { getAllBoxElementsList } from "../dom/dom.utils";
 
-function getNewPosition(target){
+function updatePosition(oldPosition){
     return function handleNewPosition(newPosition) {
-        return (parseFloat(target) || 0) + newPosition;
+        return (parseFloat(oldPosition) || 0) + newPosition;
     };
 };
 
-function getCoordinate(target) {
-    return function handleCoordinate(position) {
+function getNewCoordinate(target) {
+    return function handleCoordinate(coordinate) {
         const targetX = target.getAttribute('data-x');
         const targetY = target.getAttribute('data-y');
+        const updateXPosition = updatePosition(targetX);
+        const updateYPosition = updatePosition(targetY);
 
         return {
-            X: getNewPosition(targetX)(position.dx),
-            Y: getNewPosition(targetY)(position.dy),
+            X: updateXPosition(coordinate.dx),
+            Y: updateYPosition(coordinate.dy),
         }
     };
 };
 
-function translateElement({ style }) {
-    return function setNewCoordinate(coordinate) {
+function moveElement({ style }) {
+    return function getNewCoordinate(coordinate) {
         const newTransform = `translate(${coordinate.X}px, ${coordinate.Y}px)`;
         style.webkitTransform = style.transform = newTransform;
     };
@@ -34,32 +36,37 @@ function updatePositionAttributes(target) {
 };
 
 function translateBox(box) {
-    return function handleTranslation(position) {
-        const newCoordinate = getCoordinate(box)(position)
-        translateElement(box)(newCoordinate)
-        updatePositionAttributes(box)(newCoordinate);
+    return function handleTranslation(coordinate) {
+        const getBoxNewCoordinateWith = getNewCoordinate(box);
+        const newCoordinate = getBoxNewCoordinateWith(coordinate)
+        const moveBoxTo = moveElement(box);
+        const updatePositionBoxElement = updatePositionAttributes(box);
+
+        moveBoxTo(newCoordinate)
+        updatePositionBoxElement(newCoordinate);
     };
 };
 
-function translateBoxes(boxes) {
-    return function handleBoxes(position) {
+export function translateBoxes(boxes) {
+    return function handleBoxes(coordinate) {
         for (const box of boxes) {
-            translateBox(box)(position);
+            translateBox(box)(coordinate);
         }
     };
 };
 
 function setNewPositionToBox(box) {
-    return function handleSetting(position) {
-        const newCoordinate = getCoordinate(box)(position);
+    return function handleSetting(coordinate) {
+        const getBoxNewCoordinateWith = getNewCoordinate(box);
+        const newCoordinate = getBoxNewCoordinateWith(coordinate);
         store.setPositionToBox(box, newCoordinate);
     }
 }
 
-function setNewPositionToBoxes(boxes){
-    return function handleBoxes(position) {
+export function setNewPositionToBoxes(boxes){
+    return function handleBoxes(coordinate) {
         for (const box of boxes) {
-            setNewPositionToBox(box)(position);
+            setNewPositionToBox(box)(coordinate);
         }
     };
 };
@@ -67,48 +74,10 @@ function setNewPositionToBoxes(boxes){
 export function updateAxisOfAllBoxes() {
     // LOADING START STATE
     const allBoxes = getAllBoxElementsList();
-    // debugger;
+
     allBoxes.map((boxElement) => {
         const box = store.getBoxById(boxElement.id);
         return updatePositionAttributes(boxElement)({ X: box.left, Y: box.top })
     });
     // LOADING END STATE (when the map has been ended)
 }
-
-export function handleBoxTranslation(event) {
-    const { target, dx, dy } = event;
-    const currentBox = store.getBoxById(target.id);
-    const position = { dx, dy };
-    const moveTargetTo = translateBoxes([target]);
-
-    if (currentBox.selected) {
-        moveSelectedBoxesTo(position);
-    } else {
-        moveTargetTo(position);
-    }
-};
-
-function moveSelectedBoxesTo(position) {
-    const selectedBoxes = getSelectedBoxElements();
-    const translateSelectedBoxesTo = translateBoxes(selectedBoxes);
-    translateSelectedBoxesTo(position);
-}
-
-export function handleBoxPropsAfterDrag (event) {
-    const { target, dx, dy } = event;
-    const currentBox = store.getBoxById(target.id);
-    const position = { dx, dy };
-    const updateTargetPosition = setNewPositionToBoxes([target]);
-
-    if(currentBox.selected) {
-        updateSelectedBoxesPosition(position)
-    } else {
-        updateTargetPosition(position);
-    }
-};
-
-function updateSelectedBoxesPosition(position) {
-    const selectedBoxes = getSelectedBoxElements();
-    const setNewPositionToSelectedBoxes = setNewPositionToBoxes(selectedBoxes);
-    setNewPositionToSelectedBoxes(position);
-};

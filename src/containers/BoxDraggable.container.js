@@ -1,8 +1,9 @@
 import React, { Component, createRef } from "react";
 import interact from "interactjs";
 import BoxDraggable from "../components/BoxDraggable";
-import { handleBoxPropsAfterDrag, handleBoxTranslation, updateAxisOfAllBoxes } from "../utils/boxes/position.utils";
+import { handleBoxPropsAfterDrag, handleBoxTranslation } from "../utils/boxes/translation-handlers.utils";
 import { parentRestriction } from "../utils/interactions/modifiers.utils";
+import { updateAxisOfAllBoxes } from "../utils/boxes/position.utils";
 
 class BoxDraggableContainer extends Component {
     constructor(props) {
