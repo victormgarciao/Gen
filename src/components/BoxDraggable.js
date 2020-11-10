@@ -4,7 +4,7 @@ import CloseDeleteButton from "./BoxDeleteButton";
 
 function BoxDraggable(props) {
     const {
-        box: { remove },
+        handleDeleteCurrentBox,
         children,
         color,
         handleToggle,
@@ -34,10 +34,8 @@ function BoxDraggable(props) {
                 onClick={(handleToggle)}
                 ref={reference}
             >
-                { selected && (
-                    <CloseDeleteButton action={remove} />
-                )}
-                {children}
+                { selected && <CloseDeleteButton action={handleDeleteCurrentBox} /> }
+                { children }
             </div>
         </Fragment>
     );

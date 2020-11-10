@@ -1,7 +1,7 @@
 import React, { Component, createRef } from "react";
 import interact from "interactjs";
 import BoxDraggable from "../components/BoxDraggable";
-import { handleBoxPropsAfterDrag, handleBoxTranslation, handleBoxBeforeDrag } from "../utils/boxes/position.utils";
+import { handleBoxPropsAfterDrag, handleBoxTranslation, updateAxisOfAllBoxes } from "../utils/boxes/position.utils";
 import { parentRestriction } from "../utils/interactions/modifiers.utils";
 
 class BoxDraggableContainer extends Component {
@@ -12,6 +12,7 @@ class BoxDraggableContainer extends Component {
 
         this.handleDrag = this.handleDrag.bind(this);
         this.handleToggle = this.handleToggle.bind(this);
+        this.handleDeleteCurrentBox = this.handleDeleteCurrentBox.bind(this);
     }
 
     handleToggle() {
@@ -23,7 +24,13 @@ class BoxDraggableContainer extends Component {
 
     handleDrag() {
         this.hasBeenMoved = true;
-        handleBoxBeforeDrag()
+    }
+
+
+    async handleDeleteCurrentBox(event) {
+        const { props: { box: { remove } } } = this;
+        await remove(event);
+        updateAxisOfAllBoxes();
     }
 
   
@@ -48,6 +55,7 @@ class BoxDraggableContainer extends Component {
                 {...this.props}
                 reference={this.boxRef}
                 handleToggle={this.handleToggle}
+                handleDeleteCurrentBox={this.handleDeleteCurrentBox}
             />
         );
     };

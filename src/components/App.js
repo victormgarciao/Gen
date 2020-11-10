@@ -1,14 +1,14 @@
 import React from "react";
 
 import store from "../stores/MainStore";
-import Toolbar from "./Toolbar";
 import { observer } from "mobx-react";
 import CanvasContainer from "../containers/Canvas.container";
+import ToolbarContainer from "../containers/Toolbar.container";
 
 function App() {
     return (
         <div className="app">
-            <Toolbar />
+            <ToolbarContainer />
             <ul style={{ color: "white", textAlign: 'left', width: '1150px', marginTop: '-150px' }}>
                 <h1>How it works</h1>
                 <li>You can add boxes with the button "Add Box" with a random color</li>

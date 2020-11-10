@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Canvas from "../components/Canvas";
+import { updateAxisOfAllBoxes } from "../utils/boxes/position.utils";
 import { isObject2InsideObject1 } from "../utils/selection/selection.utils";
 
 class CanvasContainer extends Component {
@@ -101,6 +102,10 @@ class CanvasContainer extends Component {
                 startY: this.state.mouse.startY,
             }
         });
+    }
+
+    componentDidMount() {
+        updateAxisOfAllBoxes();
     }
     
 
