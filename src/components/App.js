@@ -9,7 +9,7 @@ function App() {
     return (
         <div className="app">
             <ToolbarContainer />
-            <ul style={{ color: "white", textAlign: 'left', width: '1150px', marginTop: '-150px' }}>
+            <ul style={{ color: "white", textAlign: 'left', width: '1150px' }}>
                 <h1>How it works</h1>
                 <li>You can add boxes with the button "Add Box" with a random color</li>
                 <li>You can delete all boxes with button "Remove All Boxes"</li>
@@ -25,6 +25,10 @@ function App() {
                 <li>You can change the color of the selected boxes by clicking on the color selector</li>
                 <li>It keeps the state in the localStorage</li>
                 <li>And also, if you make a mistake, you can undo or redo your actions with buttons "undo" and "redo"</li>
+
+                <h2>NEW</h2>
+                <li>Now you you select with the selection area, dont toggle it</li>
+                <li>Now you you can deselect everything just by clicking in an empty area</li>
                 <h2>Enjoy!!</h2>
             </ul>
             <CanvasContainer store={store} />

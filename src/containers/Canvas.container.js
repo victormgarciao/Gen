@@ -55,11 +55,18 @@ class CanvasContainer extends Component {
     handleMouseMove(event) {
         if (this.state.isSelectionOn) {
             this.setMousePosition(event);
+            const { mouse } = this.state;
+            const diffMouseX = mouse.x - mouse.startX;
+            const diffMouseY = mouse.y - mouse.startY;
+            const isOnTheLeft = diffMouseX < 0;
+            const isOnTheTop = diffMouseY < 0;
+            function getPositionFormated(position) { return `${position}px` }
+
             this.setState({
-                selectionWidth: Math.abs(this.state.mouse.x - this.state.mouse.startX),
-                selectionHeight: Math.abs(this.state.mouse.y - this.state.mouse.startY),
-                selectionLeft: this.state.mouse.x - this.state.mouse.startX < 0 ? this.state.mouse.x + "px" : this.state.mouse.startX + "px",
-                selectionTop: this.state.mouse.y - this.state.mouse.startY < 0 ? this.state.mouse.y + "px": this.state.mouse.startY + "px"
+                selectionWidth: Math.abs(diffMouseX),
+                selectionHeight: Math.abs(diffMouseY),
+                selectionLeft:  isOnTheLeft ? getPositionFormated(mouse.x) : getPositionFormated(mouse.startX),
+                selectionTop: isOnTheTop ? getPositionFormated(mouse.y): getPositionFormated(mouse.startY)
             });
         }
     }
@@ -74,6 +81,7 @@ class CanvasContainer extends Component {
         function handleSelection() {
             for (const boxElement of allBoxesElements) {
                 const box = store.getBoxById(boxElement.id);
+                box.unselect();
                 if (isInsideSelection(boxElement)) { box.select(); }
             }
         }

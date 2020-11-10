@@ -24,6 +24,10 @@ const BoxModel = types
 
       select() {
         self.selected = true;
+      },
+
+      unselect() {
+        self.selected = false;
       }
     }
   });
