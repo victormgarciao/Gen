@@ -74,7 +74,7 @@ class CanvasContainer extends Component {
         function handleSelection() {
             for (const boxElement of allBoxesElements) {
                 const box = store.getBoxById(boxElement.id);
-                if (isInsideSelection(boxElement)) { box.toggle(); }
+                if (isInsideSelection(boxElement)) { box.select(); }
             }
         }
 

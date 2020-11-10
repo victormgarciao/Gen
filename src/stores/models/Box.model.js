@@ -20,6 +20,10 @@ const BoxModel = types
       remove(event) {
         event.stopPropagation();
         getParent(self, 2).removeBox(self);
+      },
+
+      select() {
+        self.selected = true;
       }
     }
   });
