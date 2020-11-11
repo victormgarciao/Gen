@@ -4,6 +4,7 @@ import BoxDraggable from "../components/BoxDraggable";
 import { handleBoxPropsAfterDrag, handleBoxTranslation } from "../utils/boxes/translation-handlers.utils";
 import { parentRestriction } from "../utils/interactions/modifiers.utils";
 import { updateAxisOfAllBoxes } from "../utils/boxes/position.utils";
+import { bindContextToFunctionList } from "../utils/react/react";
 
 class BoxDraggableContainer extends Component {
     constructor(props) {
@@ -11,9 +12,8 @@ class BoxDraggableContainer extends Component {
         this.boxRef = createRef();
         this.hasBeenMoved = false;
 
-        this.handleDrag = this.handleDrag.bind(this);
-        this.handleToggle = this.handleToggle.bind(this);
-        this.handleDeleteCurrentBox = this.handleDeleteCurrentBox.bind(this);
+        const bindThisToFunctions = bindContextToFunctionList(this);
+        bindThisToFunctions([ 'handleDrag', 'handleToggle', 'handleDeleteCurrentBox' ]);
     }
 
     handleToggle() {

@@ -2,30 +2,19 @@ import React, { Component } from "react";
 import Toolbar from "../components/Toolbar";
 import store from "../stores/MainStore";
 import { updateAxisOfAllBoxes } from "../utils/boxes/position.utils";
+import { bindContextToFunctionList } from "../utils/react/react";
 
 class ToolbarContainer extends Component {
     constructor() {
         super();
-        const {
-          addBoxToStore,
-          removeAllBoxes,
-          removeSelectedBoxes,
-          getSelectedBoxesLabel,
-          setColorToSelectedBoxes,
-        } = store;
 
-        this.addBoxToStore = addBoxToStore;
-        this.removeAllBoxes = removeAllBoxes;
-        this.removeSelectedBoxes = removeSelectedBoxes;
-        this.getSelectedBoxesLabel = getSelectedBoxesLabel;
-        this.setColorToSelectedBoxes = setColorToSelectedBoxes;
-
-        this.handleRemoveSelectedBoxes = this.handleRemoveSelectedBoxes.bind(this);
+        const bindThisToFunctions = bindContextToFunctionList(this);
+        bindThisToFunctions([ 'handleRemoveSelectedBoxes' ]);
     }
 
 
     async handleRemoveSelectedBoxes() {
-        await this.removeSelectedBoxes();
+        await store.removeSelectedBoxes();
         updateAxisOfAllBoxes();
     }
 
@@ -33,11 +22,11 @@ class ToolbarContainer extends Component {
     render() {
         return (
           <Toolbar
-              addBoxToStore={this.addBoxToStore}
-              removeAllBoxes={this.removeAllBoxes}
+              addBoxToStore={store.addBoxToStore}
+              removeAllBoxes={store.removeAllBoxes}
               handleRemoveSelectedBoxes={this.handleRemoveSelectedBoxes}
-              getSelectedBoxesLabel={this.getSelectedBoxesLabel}
-              setColorToSelectedBoxes={this.setColorToSelectedBoxes}
+              getSelectedBoxesLabel={store.getSelectedBoxesLabel}
+              setColorToSelectedBoxes={store.setColorToSelectedBoxes}
           />
         );
     }

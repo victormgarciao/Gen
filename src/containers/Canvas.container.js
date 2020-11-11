@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Canvas from "../components/Canvas";
 import { updateAxisOfAllBoxes } from "../utils/boxes/position.utils";
+import { bindContextToFunctionList } from "../utils/react/react";
 import { isObject2InsideObject1 } from "../utils/selection/selection.utils";
 
 class CanvasContainer extends Component {
@@ -24,11 +25,14 @@ class CanvasContainer extends Component {
             selectionTop: 0,
         }
 
-        this.handleMouseDown = this.handleMouseDown.bind(this);
-        this.handleMouseMove = this.handleMouseMove.bind(this);
-        this.handleMouseUp = this.handleMouseUp.bind(this);
-        this.setMousePosition = this.setMousePosition.bind(this);
-        this.resetSelection = this.resetSelection.bind(this);
+        const bindThisToFunctions = bindContextToFunctionList(this);
+        bindThisToFunctions([
+            'handleMouseDown',
+            'handleMouseMove',
+            'handleMouseUp',
+            'setMousePosition',
+            'resetSelection'
+        ]);
     }
 
 
