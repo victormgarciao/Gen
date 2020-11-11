@@ -12,8 +12,30 @@ class BoxDraggableContainer extends Component {
         this.boxRef = createRef();
         this.hasBeenMoved = false;
 
+        const { width, height, left, top, color } = props;
+
+        this.state = {
+            boxStyle: {
+                backgroundColor: color,
+                width,
+                height,
+                margin: 0,
+                border: 'none',
+                transform: `translate(${left}px, ${top}px)`,
+                userSelect: 'none'
+            }
+        }
+
+        this.width = props.width;
+
         const bindThisToFunctions = bindContextToFunctionList(this);
-        bindThisToFunctions([ 'handleDrag', 'handleToggle', 'handleDeleteCurrentBox' ]);
+        bindThisToFunctions([
+            'handleDrag',
+            'handleToggle',
+            'handleDeleteCurrentBox',
+            'handleSize',
+            'handleColor',
+        ]);
     }
 
     handleToggle() {
@@ -32,6 +54,43 @@ class BoxDraggableContainer extends Component {
         const { props: { box: { remove } } } = this;
         await remove(event);
         updateAxisOfAllBoxes();
+    }
+
+    handleSize() {
+        const { selected, width, height} = this.props;
+        const boxStyleState = {
+            boxStyle: {
+                ...this.state.boxStyle,
+                width: selected ? width - 12 : width,
+                height: selected ? height - 12: height,
+                margin: selected ? 5 : 0,
+                border: selected ? '2px solid black' : 'none',
+            }
+        };
+
+        this.setState(boxStyleState);
+    }
+
+    handleColor() {
+        const { color } = this.props;
+
+        this.setState({
+            boxStyle: {
+                ...this.state.boxStyle,
+                backgroundColor: color,
+            }
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        const { selected, color } = this.props;
+        const { selected : prevSelected, color: prevColor } = prevProps;
+
+        const hasSelectedChanged = prevSelected !== selected;
+        const hasColorChanged = prevColor !== color;
+
+        if (hasColorChanged) this.handleColor();
+        if (hasSelectedChanged) this.handleSize();
     }
 
   
@@ -54,6 +113,7 @@ class BoxDraggableContainer extends Component {
         return (
             <BoxDraggable
                 {...this.props}
+                boxStyle={this.state.boxStyle}
                 reference={this.boxRef}
                 handleToggle={this.handleToggle}
                 handleDeleteCurrentBox={this.handleDeleteCurrentBox}

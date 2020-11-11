@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import Canvas from "../components/Canvas";
+import store from "../stores/MainStore";
 import { updateAxisOfAllBoxes } from "../utils/boxes/position.utils";
 import { bindContextToFunctionList } from "../utils/react/react";
 import { isObject2InsideObject1 } from "../utils/selection/selection.utils";
 
 class CanvasContainer extends Component {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
 
-        this.store = props.store;
-        
         this.state = {
             canvas: document.getElementById('canvas'),
             isSelectionOn: false,
@@ -80,7 +79,6 @@ class CanvasContainer extends Component {
         const selectionSquare = this.state.canvas.querySelector(".selection");
         const allBoxesElements = [...this.state.canvas.querySelectorAll(".box")];
         const isInsideSelection = isObject2InsideObject1(selectionSquare);
-        const store = this.store;
 
         function handleSelection() {
             for (const boxElement of allBoxesElements) {
@@ -124,7 +122,7 @@ class CanvasContainer extends Component {
     render() {
         return (
             <Canvas 
-                store={this.store}
+                store={store}
                 isSelectionOn={this.state.isSelectionOn}
                 handleMouseUp={this.handleMouseUp}
                 handleMouseDown={this.handleMouseDown}
