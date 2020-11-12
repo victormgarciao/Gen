@@ -6,6 +6,7 @@ function BoxDraggable(props) {
     const {
         boxStyle,
         children,
+        classNameList,
         handleDeleteCurrentBox,
         handleToggle,
         id,
@@ -17,7 +18,7 @@ function BoxDraggable(props) {
         <Fragment>
             <div
                 id={id}
-                className={`box ${selected ? 'selected' : ''}`}
+                className={classNameList}
                 style={boxStyle}
                 onClick={(handleToggle)}
                 ref={reference}

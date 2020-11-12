@@ -6,25 +6,29 @@ import { parentRestriction } from "../utils/interactions/modifiers.utils";
 import { updateAxisOfAllBoxes } from "../utils/boxes/position.utils";
 import { bindContextToFunctionList } from "../utils/react/react";
 
+function getBoxStyle(props) {
+    const { width, height, left, top, color, selected } = props;
+
+    return {
+        backgroundColor: color,
+        width: selected ? width - 12 : width,
+        height: selected ? height - 12 : height,
+        margin: selected ? 5 : 0,
+        border: selected ? '2px solid black' : 'none',
+        transform: `translate(${left}px, ${top}px)`,
+        userSelect: 'none'
+    };
+};
+
+function getClassNames({ selected }) {
+    return selected ? 'box selected' : 'box';
+}
+
 class BoxDraggableContainer extends Component {
     constructor(props) {
         super(props);
         this.boxRef = createRef();
         this.hasBeenMoved = false;
-
-        const { width, height, left, top, color } = props;
-
-        this.state = {
-            boxStyle: {
-                backgroundColor: color,
-                width,
-                height,
-                margin: 0,
-                border: 'none',
-                transform: `translate(${left}px, ${top}px)`,
-                userSelect: 'none'
-            }
-        }
 
         this.width = props.width;
 
@@ -33,8 +37,6 @@ class BoxDraggableContainer extends Component {
             'handleDrag',
             'handleToggle',
             'handleDeleteCurrentBox',
-            'handleSize',
-            'handleColor',
         ]);
     }
 
@@ -51,46 +53,11 @@ class BoxDraggableContainer extends Component {
 
 
     async handleDeleteCurrentBox(event) {
+        event.preventDefault();
+        event.stopPropagation();
         const { props: { box: { remove } } } = this;
         await remove(event);
         updateAxisOfAllBoxes();
-    }
-
-    handleSize() {
-        const { selected, width, height} = this.props;
-        const boxStyleState = {
-            boxStyle: {
-                ...this.state.boxStyle,
-                width: selected ? width - 12 : width,
-                height: selected ? height - 12: height,
-                margin: selected ? 5 : 0,
-                border: selected ? '2px solid black' : 'none',
-            }
-        };
-
-        this.setState(boxStyleState);
-    }
-
-    handleColor() {
-        const { color } = this.props;
-
-        this.setState({
-            boxStyle: {
-                ...this.state.boxStyle,
-                backgroundColor: color,
-            }
-        });
-    }
-
-    componentDidUpdate(prevProps) {
-        const { selected, color } = this.props;
-        const { selected : prevSelected, color: prevColor } = prevProps;
-
-        const hasSelectedChanged = prevSelected !== selected;
-        const hasColorChanged = prevColor !== color;
-
-        if (hasColorChanged) this.handleColor();
-        if (hasSelectedChanged) this.handleSize();
     }
 
   
@@ -108,12 +75,14 @@ class BoxDraggableContainer extends Component {
             })
         ;
     }
+
   
     render() {
         return (
             <BoxDraggable
                 {...this.props}
-                boxStyle={this.state.boxStyle}
+                boxStyle={getBoxStyle(this.props)}
+                classNameList={getClassNames(this.props)}
                 reference={this.boxRef}
                 handleToggle={this.handleToggle}
                 handleDeleteCurrentBox={this.handleDeleteCurrentBox}

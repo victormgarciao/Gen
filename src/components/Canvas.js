@@ -34,10 +34,10 @@ function Canvas(props) {
                     top={selectionTop}
                 />
             )}
-            {values(store.boxes).map((box, index) => (
+            {values(store.boxes).map((box) => (
                 <Box
                     id={box.id}
-                    key={index}
+                    key={box.id}
                     color={box.color}
                     left={box.left}
                     top={box.top}

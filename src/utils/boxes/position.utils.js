@@ -7,6 +7,24 @@ function updatePosition(oldPosition){
     };
 };
 
+// function getNewCoordinate(target) {
+//     return function handleCoordinate(coordinate) {
+//         const box = store.getBoxById(target.id);
+//         const { left, top } = box;
+//         console.log()
+
+//         // const targetX = target.getAttribute('data-x');
+//         // const targetY = target.getAttribute('data-y');
+//         const updateLeftPosition = updatePosition(left);
+//         const updateTopPosition = updatePosition(top);
+
+//         return {
+//             X: updateLeftPosition(coordinate.dx),
+//             Y: updateTopPosition(coordinate.dy),
+//         }
+//     };
+// };
+
 function getNewCoordinate(target) {
     return function handleCoordinate(coordinate) {
         const targetX = target.getAttribute('data-x');
@@ -22,7 +40,7 @@ function getNewCoordinate(target) {
 };
 
 function moveElement({ style }) {
-    return function getNewCoordinate(coordinate) {
+    return function moveTo(coordinate) {
         const newTransform = `translate(${coordinate.X}px, ${coordinate.Y}px)`;
         style.webkitTransform = style.transform = newTransform;
     };
