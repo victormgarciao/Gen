@@ -4,6 +4,8 @@ import BoxModel from "./models/Box.model";
 import getRandomColor from "../utils/getRandomColor";
 import { values } from "mobx";
 import { UndoManager } from "mst-middlewares";
+import SelectionModel from "./models/Selection.model";
+import MouseModel from "./models/Mouse.model";
 
 function createBox() {
     return BoxModel.create({
@@ -18,6 +20,7 @@ const MainStore = types
     .model("MainStore", {
         boxes: types.array(BoxModel),
         history: types.optional(UndoManager, {}),
+        selection: SelectionModel,
     })
     .actions(self => {
         setUndoManager(self);
@@ -88,7 +91,12 @@ export const setUndoManager = (targetStore) => {
     undoManager = targetStore.history
 };
 
-const store = MainStore.create();
+
+const store = MainStore.create({
+    selection: SelectionModel.create({
+        mouse: MouseModel.create(),
+    }),
+});
 store.init();
 
 onPatch(store, patch => {

@@ -99,3 +99,7 @@ export function updateAxisOfAllBoxes() {
     });
     // LOADING END STATE (when the map has been ended)
 }
+
+export function getPositionFormated(position) {
+    return `${position}px`;
+};
